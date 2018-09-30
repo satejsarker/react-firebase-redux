@@ -7,7 +7,7 @@ import {Link } from 'react-router-dom'
      <div className="container">
      
      <Link  to='/' className="navbar-brand">
-ClintPanel
+        ClintPanel
 
      </Link>
      <button 

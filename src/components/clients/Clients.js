@@ -1,25 +1,33 @@
 import React, { PureComponent } from 'react'
 import {Link} from 'react-router-dom';
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import Loader from 'react-loader-spinner';
  class Clients extends PureComponent {
+   state={
+     totalOwed:null
+   }
+   static getDerivedStateFromProps(props,  ){
+      const {clients}= props;
+     
+      if(clients){
+        const total=clients.reduce((total,client)=>{
+          return total+ parseFloat(client.balance.toString());
+        },0);
+
+
+        return {totalOwed:total}
+      }
+      else{
+        return null;
+      }
+      
+   }
   render() {
-    const clients=[
-      {
-      id:'1234',
-      firstName:'satej',
-      lastName:'sarker',
-      email:'satej@email.com',
-      phone:'444-4444-222',
-      balance:'40'
-    },
-     {
-       id: '12',
-       firstName: 'samir',
-       lastName: 'sarker',
-       email: 'samir@email.com',
-       phone: '4234-442344-222',
-       balance: '33.2323'
-     }
-  ];
+    const totalOwed=this.state.totalOwed
+    const {clients}=this.props;
     if(clients){
 return ( <div >
     <div className="row">
@@ -31,6 +39,13 @@ return ( <div >
     </h1>
     </div>
     <div className="col-md-6">
+    <h5 className="text-right text-secondary">
+    <span className="text-success">
+    Total Owed :</span>{' '}
+    <span className="text-primary">
+    ${parseFloat(totalOwed).toFixed(2)}
+    </span>
+    </h5>
     </div>
     </div>
 
@@ -52,9 +67,9 @@ return ( <div >
       <tr key={client.id}>
         <td>{client.firstName} {client.lastName}</td>
         <td>{client.email}</td>
-          < td > $ {
+          <td> $ {
             parseFloat(client.balance).toFixed(2)
-          } < /td>
+          } </td>
           <td>
             <Link to={`/client/${client.id}`} 
             className="btn btn-secondary btn-sm"
@@ -72,9 +87,33 @@ return ( <div >
   </div>
 )
     }else{
-      return <h1>Loding...</h1>
+      return (
+        <Loader style={{margin:'auto',display:'block'}}
+        type="Rings"
+        color="#007bff"
+        height="200"	
+        width='1000'
+        margin='auto'
+     /> 
+      )
     }
     
   }
 }
-export default Clients;
+
+
+
+Clients.propTypes={
+  firestore:PropTypes.object.isRequired,
+  clients:PropTypes.array
+}
+
+
+export default compose(
+  firestoreConnect([{
+    collection:'clients'
+  }]),
+  connect((state,props)=>({
+    clients: state.firestore.ordered.clients
+  }))
+)(Clients)

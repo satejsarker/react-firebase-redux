@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "classnames": "^2.2.6",
     "firebase": "^5.5.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
+    "react-loader-spinner": "^2.0.6",
     "react-redux": "^5.0.7",
     "react-redux-firebase": "^2.1.8",
     "react-router-dom": "^4.3.1",
