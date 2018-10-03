@@ -45,7 +45,8 @@ import React, { Component } from 'react'
 
      }
   render() {
-      const {client}=this.props
+      const {client}=this.props;
+        const {disableNalanceOnEdit}=this.props.settings;
    if(client){
        return (
         //    defaultValue is used for editing for read only value from client  
@@ -100,6 +101,7 @@ import React, { Component } from 'react'
             <label htmlFor="balance">Balance</label>
             <input type="text"
             name='balance'
+            disabled={disableNalanceOnEdit}
             ref={this.balanceInput}
             defaultValue={client.balance}
                  className="form-control"/>
@@ -148,7 +150,8 @@ export default compose(
             collection: 'clients', storeAs: 'client', doc: props.match.params.id
         }
     ]),
-    connect(({ firestore: { ordered } }, props) => ({
-        client: ordered.client && ordered.client[0]
+    connect(({ firestore: { ordered } ,settings}, props) => ({
+        client: ordered.client && ordered.client[0],
+        settings:settings
     }))
 )(EditClient);
